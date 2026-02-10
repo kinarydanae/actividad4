@@ -1,96 +1,65 @@
-const mongoose = require('mongoose');
-const Product = require('../models/Product');
+const Product = require('../models/Product'); // tu modelo mongoose
 
-const createProduct = async (req, res) => {
-  const { name, price, stock } = req.body;
-  if (!name || price == null || stock == null) return res.status(400).json({ msg: 'Faltan campos' });
-
-  // --- MOCK ---
-  if (global.mockDB) {
-    const newProduct = { _id: Date.now().toString(), name, price, stock };
-    global.mockDB.products.push(newProduct);
-    return res.status(201).json(newProduct);
+// Crear producto
+exports.createProduct = async (req, res) => {
+  const { name, price, description } = req.body;
+  if (!name || !price || !description) {
+    return res.status(400).json({ msg: 'Todos los campos son obligatorios' });
   }
 
-  // --- MongoDB real ---
   try {
-    const product = await Product.create({ name, price, stock });
+    const product = new Product({ name, price, description });
+    await product.save();
     res.status(201).json(product);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ msg: 'Error al crear producto' });
+    res.status(500).json({ msg: 'Error al agregar producto' });
   }
 };
 
-const getProducts = async (req, res) => {
-  if (global.mockDB) return res.json(global.mockDB.products);
-
+// Obtener todos los productos
+exports.getProducts = async (req, res) => {
   try {
     const products = await Product.find();
     res.json(products);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ msg: 'Error al obtener productos' });
   }
 };
 
-const getProductById = async (req, res) => {
-  const { id } = req.params;
-
-  if (global.mockDB) {
-    const product = global.mockDB.products.find(p => p._id === id);
-    if (!product) return res.status(404).json({ msg: 'Producto no encontrado (mock)' });
-    return res.json(product);
-  }
-
+// Obtener producto por id
+exports.getProductById = async (req, res) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(400).json({ msg: 'ID inválido' });
-    const product = await Product.findById(id);
+    const product = await Product.findById(req.params.id);
     if (!product) return res.status(404).json({ msg: 'Producto no encontrado' });
     res.json(product);
   } catch (error) {
-    res.status(500).json({ msg: 'Error al buscar producto' });
+    console.error(error);
+    res.status(500).json({ msg: 'Error al obtener producto' });
   }
 };
 
-const updateProduct = async (req, res) => {
-  const { id } = req.params;
-
-  if (global.mockDB) {
-    const product = global.mockDB.products.find(p => p._id === id);
-    if (!product) return res.status(404).json({ msg: 'Producto no encontrado (mock)' });
-
-    Object.assign(product, req.body);
-    return res.json(product);
-  }
-
+// Actualizar producto
+exports.updateProduct = async (req, res) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(400).json({ msg: 'ID inválido' });
-    const product = await Product.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
+    const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!product) return res.status(404).json({ msg: 'Producto no encontrado' });
     res.json(product);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ msg: 'Error al actualizar producto' });
   }
 };
 
-const deleteProduct = async (req, res) => {
-  const { id } = req.params;
-
-  if (global.mockDB) {
-    const index = global.mockDB.products.findIndex(p => p._id === id);
-    if (index === -1) return res.status(404).json({ msg: 'Producto no encontrado (mock)' });
-    global.mockDB.products.splice(index, 1);
-    return res.json({ msg: 'Producto eliminado (mock)' });
-  }
-
+// Borrar producto
+exports.deleteProduct = async (req, res) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(400).json({ msg: 'ID inválido' });
-    const product = await Product.findByIdAndDelete(id);
+    const product = await Product.findByIdAndDelete(req.params.id);
     if (!product) return res.status(404).json({ msg: 'Producto no encontrado' });
-    res.json({ msg: 'Producto eliminado' });
+    res.json({ msg: 'Producto eliminado', _id: product._id });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ msg: 'Error al eliminar producto' });
   }
 };
-
-module.exports = { createProduct, getProducts, getProductById, updateProduct, deleteProduct };
