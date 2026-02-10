@@ -1,8 +1,8 @@
-const API = "https://actividad4-production.up.railway.app/api/products";
+const API = "/api/products";
 const token = localStorage.getItem('token');
 
 if (!token && window.location.pathname !== "/login.html") {
-  window.location.href = 'https://actividad4-production.up.railway.app/login.html';
+  window.location.href = '/login.html';
 }
 
 const productList = document.getElementById('productList');
@@ -10,9 +10,7 @@ const errorMsg = document.getElementById('error');
 
 // Cargar productos
 async function loadProducts() {
-  const res = await fetch(API, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
+  const res = await fetch(API, { headers: { Authorization: `Bearer ${token}` } });
   const products = await res.json();
   productList.innerHTML = '';
 
@@ -29,7 +27,6 @@ async function loadProducts() {
 // Agregar producto
 document.getElementById('addProduct').onclick = async () => {
   errorMsg.textContent = '';
-
   const name = document.getElementById('name').value;
   const price = document.getElementById('price').value;
   const stock = document.getElementById('stock').value;
@@ -52,12 +49,12 @@ document.getElementById('addProduct').onclick = async () => {
 async function deleteProduct(id) {
   await fetch(`${API}/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
   loadProducts();
-};
+}
 
 // Logout
 document.getElementById('logout').onclick = () => {
   localStorage.removeItem('token');
-  window.location.href = 'https://actividad4-production.up.railway.app/login.html';
+  window.location.href = '/login.html';
 };
 
 loadProducts();

@@ -1,4 +1,4 @@
-require('dotenv').config(); // <-- Esto carga las variables del .env
+require('dotenv').config(); // cargar .env
 const app = require('./app');
 
 const PORT = process.env.PORT || 3000;

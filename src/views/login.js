@@ -1,5 +1,4 @@
-// URL pública de backend en Railway
-const API = 'https://actividad4-production.up.railway.app/api';
+const API = "/api";
 
 const form = document.getElementById('loginForm');
 const msg = document.getElementById('msg');
@@ -23,13 +22,11 @@ form.addEventListener('submit', async (e) => {
       localStorage.setItem('token', data.token);
       msg.textContent = 'Login exitoso';
       msg.style.color = 'green';
-      // Redirigir a página de productos
-      window.location.href = 'https://actividad4-production.up.railway.app/index.html';
+      window.location.href = 'index.html';
     } else {
       msg.textContent = data.msg || 'Error al iniciar sesión';
       msg.style.color = 'red';
     }
-
   } catch (err) {
     console.error(err);
     msg.textContent = 'Error de conexión con el servidor';
