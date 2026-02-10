@@ -12,4 +12,4 @@ const UserSchema = new mongoose.Schema({ // Define un nuevo esquema de Mongoose 
   }
 }, { timestamps: true }); // Agrega automáticamente campos de marca de tiempo createdAt y updatedAt a cada documento de usuario
 
-module.exports = mongoose.model('User', UserSchema); // Exporta el modelo de usuario creado a partir del esquema UserSchema para que pueda ser utilizado en otros archivos
+module.exports = mongoose.model('User', UserSchema); // Exporta el modelo de usuario creado a partir del esquema UserSchema para que pueda ser utilizado en otros archivo
