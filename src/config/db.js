@@ -1,7 +1,6 @@
-// src/config/db.js
 const mongoose = require('mongoose');
 
-let mockData = {
+const mockData = {
   users: [
     { _id: '1', email: 'demo@user.com', password: 'demo' }
   ],
@@ -11,17 +10,19 @@ let mockData = {
 };
 
 const connectDB = async () => {
+  // 👉 VERCEL = MOCK
   if (process.env.VERCEL) {
-    console.log('Usando base de datos mock (Vercel)');
+    console.log('🧪 Usando base de datos MOCK (Vercel)');
     global.mockDB = mockData;
     return;
   }
 
+  // 👉 LOCAL = MongoDB
   try {
     await mongoose.connect(process.env.MONGO_URI);
-    console.log('MongoDB conectado');
+    console.log('🟢 MongoDB conectado');
   } catch (error) {
-    console.error('Error al conectar MongoDB', error.message);
+    console.error('🔴 Error MongoDB:', error.message);
     process.exit(1);
   }
 };

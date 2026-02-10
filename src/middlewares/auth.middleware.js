@@ -1,19 +1,17 @@
-// src/middlewares/auth.middleware.js
 const jwt = require('jsonwebtoken');
 
+const JWT_SECRET = process.env.VERCEL ? 'mock_secret' : process.env.JWT_SECRET;
+
 module.exports = (req, res, next) => {
-  const token = req.header('Authorization')?.split(' ')[1];
+  const authHeader = req.headers.authorization;
 
-  if (!token) return res.status(401).json({ msg: 'Token requerido' });
+  if (!authHeader)
+    return res.status(401).json({ msg: 'Token requerido' });
 
-  // --- Si estamos en Vercel y token es mock ---
-  if (process.env.VERCEL && token === 'mock_token') {
-    req.user = { id: '1' };
-    return next();
-  }
+  const token = authHeader.split(' ')[1];
 
   try {
-    const decoded = jwt.verify(token, process.env.VERCEL ? 'mock_secret' : process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded;
     next();
   } catch {

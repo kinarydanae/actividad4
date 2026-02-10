@@ -1,12 +1,18 @@
 const express = require('express');
 const router = express.Router();
-const productController = require('../controllers/product.controller');
-const authMiddleware = require('../middlewares/auth.middleware'); // protege rutas
+const {
+  createProduct,
+  getProducts,
+  updateProduct,
+  deleteProduct
+} = require('../controllers/product.controller');
 
-router.post('/', authMiddleware, productController.createProduct);
-router.get('/', authMiddleware, productController.getProducts);
-router.get('/:id', authMiddleware, productController.getProductById);
-router.put('/:id', authMiddleware, productController.updateProduct);
-router.delete('/:id', authMiddleware, productController.deleteProduct);
+const authMiddleware = require('../middlewares/auth.middleware');
+
+// CRUD productos
+router.post('/', authMiddleware, createProduct);
+router.get('/', authMiddleware, getProducts);
+router.put('/:id', authMiddleware, updateProduct);
+router.delete('/:id', authMiddleware, deleteProduct);
 
 module.exports = router;
