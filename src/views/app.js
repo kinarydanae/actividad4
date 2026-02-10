@@ -1,9 +1,8 @@
-// URL pública del backend en Railway
-const API = 'https://actividad4-production.up.railway.app/api/products';
+const API = "https://actividad4-production.up.railway.app/api/products";
 const token = localStorage.getItem('token');
 
-if (!token) {
-  window.location.href = '/login.html';
+if (!token && window.location.pathname !== "/login.html") {
+  window.location.href = 'https://actividad4-production.up.railway.app/login.html';
 }
 
 const productList = document.getElementById('productList');
@@ -14,7 +13,6 @@ async function loadProducts() {
   const res = await fetch(API, {
     headers: { Authorization: `Bearer ${token}` }
   });
-
   const products = await res.json();
   productList.innerHTML = '';
 
@@ -38,16 +36,12 @@ document.getElementById('addProduct').onclick = async () => {
 
   const res = await fetch(API, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
-    },
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
     body: JSON.stringify({ name, price, stock })
   });
 
   if (!res.ok) {
-    const data = await res.json();
-    errorMsg.textContent = data.msg || 'Todos los campos son obligatorios';
+    errorMsg.textContent = 'Todos los campos son obligatorios';
     return;
   }
 
@@ -56,17 +50,14 @@ document.getElementById('addProduct').onclick = async () => {
 
 // Eliminar producto
 async function deleteProduct(id) {
-  await fetch(`${API}/${id}`, {
-    method: 'DELETE',
-    headers: { Authorization: `Bearer ${token}` }
-  });
+  await fetch(`${API}/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
   loadProducts();
 };
 
 // Logout
 document.getElementById('logout').onclick = () => {
   localStorage.removeItem('token');
-  window.location.href = '/login.html';
+  window.location.href = 'https://actividad4-production.up.railway.app/login.html';
 };
 
 loadProducts();

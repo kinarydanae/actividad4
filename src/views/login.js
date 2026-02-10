@@ -24,7 +24,7 @@ form.addEventListener('submit', async (e) => {
       msg.textContent = 'Login exitoso';
       msg.style.color = 'green';
       // Redirigir a página de productos
-      window.location.href = '/index.html';
+      window.location.href = 'https://actividad4-production.up.railway.app/index.html';
     } else {
       msg.textContent = data.msg || 'Error al iniciar sesión';
       msg.style.color = 'red';

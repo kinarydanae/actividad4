@@ -3,27 +3,28 @@ const cors = require('cors');
 const connectDB = require('./config/db');
 const path = require('path');
 
+// Rutas
+const authRoutes = require('./routes/auth.routes');
+const productRoutes = require('./routes/product.routes');
+const userRoutes = require('./routes/user.routes');
+const errorHandler = require('./middlewares/error.middleware');
+
 const app = express();
 
-// Conectar DB solo si no es test
 if (process.env.NODE_ENV !== 'test') {
   connectDB();
 }
 
-// Configurar CORS para Vercel
-const corsOptions = {
-  origin: 'https://actividad4-nine.vercel.app', 
-};
-app.use(cors(corsOptions));
-
+app.use(cors());
 app.use(express.json());
-
-// Servir archivos estáticos (login, index, js, css)
 app.use(express.static(path.join(__dirname, 'views')));
 
-// Rutas API
-app.use('/api/auth', require('./routes/auth.routes'));
-app.use('/api/products', require('./routes/product.routes'));
-app.use('/api/users', require('./routes/user.routes'));
+// Rutas
+app.use('/api/auth', authRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/users', userRoutes);
+
+// Middleware de errores al final
+app.use(errorHandler);
 
 module.exports = app;
