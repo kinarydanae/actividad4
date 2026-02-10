@@ -9,11 +9,13 @@
 
   <div class="login-container">
     <h2>Iniciar sesión</h2>
+
     <form id="loginForm">
       <input type="email" id="email" placeholder="Correo" required />
       <input type="password" id="password" placeholder="Contraseña" required />
       <button type="submit">Entrar</button>
     </form>
+
     <p id="msg"></p>
   </div>
 
@@ -21,24 +23,39 @@
     const form = document.getElementById('loginForm');
     const msg = document.getElementById('msg');
 
+    // Cambia esta URL por la de tu backend en Vercel
+    const API_LOGIN = 'https://actividad4-nine.vercel.app/api/auth/login';
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
-      const res = await fetch('https://actividad4-nine.vercel.app/login.html', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
+      try {
+        const res = await fetch(API_LOGIN, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
 
-      const data = await res.json();
+        const data = await res.json();
 
-      if (res.ok) {
-        localStorage.setItem('token', data.token);
-        window.location.href = 'index.html'; // redirige a la página de productos
-      } else {
-        msg.textContent = data.msg;
+        if (res.ok) {
+          localStorage.setItem('token', data.token);
+          msg.style.color = 'green';
+          msg.textContent = 'Login exitoso';
+
+          // Redirige a la página de productos
+          window.location.href = '/index.html';
+        } else {
+          msg.style.color = 'red';
+          msg.textContent = data.msg || 'Error al iniciar sesión';
+        }
+      } catch (error) {
+        msg.style.color = 'red';
+        msg.textContent = 'Error de conexión con el servidor';
+        console.error(error);
       }
     });
   </script>
