@@ -1,10 +1,7 @@
-// URL de la API de productos en Railway
-const API = "https://actividad4-production.up.railway.app/api/products";
-
-// Token almacenado después de login
+// URL pública del backend en Railway
+const API = 'https://actividad4-production.up.railway.app/api/products';
 const token = localStorage.getItem('token');
 
-// Si no hay token, regresar a login
 if (!token) {
   window.location.href = '/login.html';
 }
@@ -17,11 +14,6 @@ async function loadProducts() {
   const res = await fetch(API, {
     headers: { Authorization: `Bearer ${token}` }
   });
-
-  if (!res.ok) {
-    errorMsg.textContent = 'Error al cargar productos';
-    return;
-  }
 
   const products = await res.json();
   productList.innerHTML = '';
@@ -54,7 +46,8 @@ document.getElementById('addProduct').onclick = async () => {
   });
 
   if (!res.ok) {
-    errorMsg.textContent = 'Todos los campos son obligatorios';
+    const data = await res.json();
+    errorMsg.textContent = data.msg || 'Todos los campos son obligatorios';
     return;
   }
 
@@ -67,9 +60,8 @@ async function deleteProduct(id) {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${token}` }
   });
-
   loadProducts();
-}
+};
 
 // Logout
 document.getElementById('logout').onclick = () => {
@@ -77,5 +69,4 @@ document.getElementById('logout').onclick = () => {
   window.location.href = '/login.html';
 };
 
-// Cargar productos al iniciar
 loadProducts();
