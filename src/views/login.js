@@ -1,4 +1,5 @@
-const API = "/api";
+// src/views/login.js
+const API = "http://localhost:3000/api";
 
 const form = document.getElementById('loginForm');
 const msg = document.getElementById('msg');
@@ -19,7 +20,9 @@ form.addEventListener('submit', async (e) => {
     const data = await res.json();
 
     if (res.ok) {
-      localStorage.setItem('token', data.token);
+      // --- si estamos en Vercel usamos token mock ---
+      const token = data.token || 'mock_token';
+      localStorage.setItem('token', token);
       msg.textContent = 'Login exitoso';
       msg.style.color = 'green';
       window.location.href = 'index.html';
