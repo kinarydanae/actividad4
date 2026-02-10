@@ -1,6 +1,10 @@
-const API = '/api/products';
+// URL de la API de productos en Railway
+const API = "https://actividad4-production.up.railway.app/api/products";
+
+// Token almacenado después de login
 const token = localStorage.getItem('token');
 
+// Si no hay token, regresar a login
 if (!token) {
   window.location.href = '/login.html';
 }
@@ -10,26 +14,26 @@ const errorMsg = document.getElementById('error');
 
 // Cargar productos
 async function loadProducts() {
-  try {
-    const res = await fetch(API, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+  const res = await fetch(API, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
 
-    const products = await res.json();
-    productList.innerHTML = '';
-
-    products.forEach(p => {
-      const li = document.createElement('li');
-      li.innerHTML = `
-        ${p.name} | $${p.price} | Stock: ${p.stock}
-        <button class="delete" onclick="deleteProduct('${p._id}')">X</button>
-      `;
-      productList.appendChild(li);
-    });
-  } catch (err) {
-    console.error(err);
+  if (!res.ok) {
     errorMsg.textContent = 'Error al cargar productos';
+    return;
   }
+
+  const products = await res.json();
+  productList.innerHTML = '';
+
+  products.forEach(p => {
+    const li = document.createElement('li');
+    li.innerHTML = `
+      ${p.name} | $${p.price} | Stock: ${p.stock}
+      <button class="delete" onclick="deleteProduct('${p._id}')">X</button>
+    `;
+    productList.appendChild(li);
+  });
 }
 
 // Agregar producto
@@ -40,46 +44,31 @@ document.getElementById('addProduct').onclick = async () => {
   const price = document.getElementById('price').value;
   const stock = document.getElementById('stock').value;
 
-  if (!name || !price || !stock) {
+  const res = await fetch(API, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify({ name, price, stock })
+  });
+
+  if (!res.ok) {
     errorMsg.textContent = 'Todos los campos son obligatorios';
     return;
   }
 
-  try {
-    const res = await fetch(API, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({ name, price, stock })
-    });
-
-    if (!res.ok) {
-      const data = await res.json();
-      errorMsg.textContent = data.msg || 'Error al agregar producto';
-      return;
-    }
-
-    loadProducts();
-  } catch (err) {
-    console.error(err);
-    errorMsg.textContent = 'Error de conexión con el servidor';
-  }
+  loadProducts();
 };
 
 // Eliminar producto
 async function deleteProduct(id) {
-  try {
-    await fetch(`${API}/${id}`, {
-      method: 'DELETE',
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    loadProducts();
-  } catch (err) {
-    console.error(err);
-    errorMsg.textContent = 'Error al eliminar producto';
-  }
+  await fetch(`${API}/${id}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` }
+  });
+
+  loadProducts();
 }
 
 // Logout
@@ -88,4 +77,5 @@ document.getElementById('logout').onclick = () => {
   window.location.href = '/login.html';
 };
 
+// Cargar productos al iniciar
 loadProducts();

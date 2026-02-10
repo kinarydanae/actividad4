@@ -1,5 +1,4 @@
-// URL de la API: usa relativa para local y en Vercel funcionará también
-const API = '/api/auth';
+const API = "https://actividad4-production.up.railway.app/api/auth";
 
 const form = document.getElementById('loginForm');
 const msg = document.getElementById('msg');
