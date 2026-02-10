@@ -1,4 +1,4 @@
-const API = 'http://localhost:3000/api/products';
+const API = 'https://actividad4-nine.vercel.app/api/products';
 const token = localStorage.getItem('token');
 
 if (!token) {
