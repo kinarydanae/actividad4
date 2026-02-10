@@ -123,6 +123,9 @@ li {
   padding: 0.3rem 0.6rem;
   cursor: pointer;
 }
+.delete:hover {
+  background: #cc0000;
+} 
 
 #error {
   color: crimson;
@@ -139,4 +142,18 @@ footer img.pie {
   height: auto;
   display: block;
   margin: 0 auto 0.5rem auto;
+}
+
+.edit {
+  background: #0099ff;
+  color: white;
+  border: none;
+  padding: 0.3rem 0.6rem;
+  margin-right: 0.3rem;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.edit:hover {
+  background: #0099ffcc;
 }
