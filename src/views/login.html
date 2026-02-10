@@ -19,46 +19,7 @@
     <p id="msg"></p>
   </div>
 
-  <script>
-    const form = document.getElementById('loginForm');
-    const msg = document.getElementById('msg');
-
-    // Cambia esta URL por la de tu backend en Vercel
-    const API_LOGIN = 'https://actividad4-nine.vercel.app/api/auth/login';
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-
-      try {
-        const res = await fetch(API_LOGIN, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
-        });
-
-        const data = await res.json();
-
-        if (res.ok) {
-          localStorage.setItem('token', data.token);
-          msg.style.color = 'green';
-          msg.textContent = 'Login exitoso';
-
-          // Redirige a la página de productos
-          window.location.href = '/index.html';
-        } else {
-          msg.style.color = 'red';
-          msg.textContent = data.msg || 'Error al iniciar sesión';
-        }
-      } catch (error) {
-        msg.style.color = 'red';
-        msg.textContent = 'Error de conexión con el servidor';
-        console.error(error);
-      }
-    });
-  </script>
+  <script src="login.js"></script>
 
 </body>
 </html>

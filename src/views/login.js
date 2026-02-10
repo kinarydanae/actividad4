@@ -1,3 +1,6 @@
+// URL de la API: usa relativa para local y en Vercel funcionará también
+const API = '/api/auth';
+
 const form = document.getElementById('loginForm');
 const msg = document.getElementById('msg');
 
@@ -8,21 +11,29 @@ form.addEventListener('submit', async (e) => {
   const password = document.getElementById('password').value;
 
   try {
-    const res = await fetch('/api/auth/login', {
+    const res = await fetch(`${API}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
     });
 
     const data = await res.json();
+    console.log(data); // Para depuración
 
     if (res.ok) {
       localStorage.setItem('token', data.token);
-      window.location.href = '/app.html';
+      msg.textContent = 'Login exitoso';
+      msg.style.color = 'green';
+      // Redirigir a productos
+      window.location.href = '/index.html';
     } else {
       msg.textContent = data.msg || 'Error al iniciar sesión';
+      msg.style.color = 'red';
     }
-  } catch (error) {
-    msg.textContent = 'Error de conexión al servidor';
+
+  } catch (err) {
+    console.error(err);
+    msg.textContent = 'Error de conexión con el servidor';
+    msg.style.color = 'red';
   }
 });
