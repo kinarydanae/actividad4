@@ -1,25 +1,20 @@
-// src/views/app.js
-
-// Simulación de token y login
-if (!localStorage.getItem('token')) {
-  // Para simulación, siempre tenemos un "usuario" logueado
-  localStorage.setItem('token', 'test-token');
-}
-
+const API = "/api/products";
 const token = localStorage.getItem('token');
+
+if (!token && window.location.pathname !== "/login.html") {
+  window.location.href = '/login.html';
+}
 
 const productList = document.getElementById('productList');
 const errorMsg = document.getElementById('error');
 
-let mockProducts = [
-  { _id: '1', name: 'Bolso Test', price: 100, stock: 5 },
-  { _id: '2', name: 'Bolso Demo', price: 200, stock: 2 }
-];
-
 // Cargar productos
-function loadProducts() {
+async function loadProducts() {
+  const res = await fetch(API, { headers: { Authorization: `Bearer ${token}` } });
+  const products = await res.json();
   productList.innerHTML = '';
-  mockProducts.forEach(p => {
+
+  products.forEach(p => {
     const li = document.createElement('li');
     li.innerHTML = `
       ${p.name} | $${p.price} | Stock: ${p.stock}
@@ -33,7 +28,7 @@ function loadProducts() {
 // Agregar producto
 document.getElementById('addProduct').onclick = addProductHandler;
 
-function addProductHandler() {
+async function addProductHandler() {
   errorMsg.textContent = '';
   const name = document.getElementById('name').value;
   const price = document.getElementById('price').value;
@@ -44,14 +39,16 @@ function addProductHandler() {
     return;
   }
 
-  const newProduct = {
-    _id: Date.now().toString(),
-    name,
-    price: Number(price),
-    stock: Number(stock)
-  };
+  const res = await fetch(API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ name, price, stock })
+  });
 
-  mockProducts.push(newProduct);
+  if (!res.ok) {
+    errorMsg.textContent = 'Error al agregar producto';
+    return;
+  }
 
   document.getElementById('name').value = '';
   document.getElementById('price').value = '';
@@ -61,21 +58,21 @@ function addProductHandler() {
 }
 
 // Eliminar producto
-function deleteProduct(id) {
-  mockProducts = mockProducts.filter(p => p._id !== id);
+async function deleteProduct(id) {
+  await fetch(`${API}/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
   loadProducts();
 }
 
 // Editar producto
-function editProduct(id, name, price, stock) {
+async function editProduct(id, name, price, stock) {
   document.getElementById('name').value = name;
   document.getElementById('price').value = price;
   document.getElementById('stock').value = stock;
 
   const addBtn = document.getElementById('addProduct');
   addBtn.textContent = 'Actualizar';
-
-  addBtn.onclick = () => {
+  
+  addBtn.onclick = async () => {
     const updatedName = document.getElementById('name').value;
     const updatedPrice = document.getElementById('price').value;
     const updatedStock = document.getElementById('stock').value;
@@ -85,11 +82,19 @@ function editProduct(id, name, price, stock) {
       return;
     }
 
-    mockProducts = mockProducts.map(p =>
-      p._id === id
-        ? { ...p, name: updatedName, price: Number(updatedPrice), stock: Number(updatedStock) }
-        : p
-    );
+    const res = await fetch(`${API}/${id}`, {
+      method: 'PUT',
+      headers: { 
+        'Content-Type': 'application/json', 
+        Authorization: `Bearer ${token}` 
+      },
+      body: JSON.stringify({ name: updatedName, price: updatedPrice, stock: updatedStock })
+    });
+
+    if (!res.ok) {
+      errorMsg.textContent = 'Error al actualizar producto';
+      return;
+    }
 
     addBtn.textContent = 'Agregar';
     addBtn.onclick = addProductHandler;
@@ -102,10 +107,10 @@ function editProduct(id, name, price, stock) {
   };
 }
 
-// Logout (solo borra token para simulación)
+// Logout
 document.getElementById('logout').onclick = () => {
   localStorage.removeItem('token');
-  alert('Token eliminado. Recarga la página para simular login.');
+  window.location.href = '/login.html';
 };
 
 loadProducts();
