@@ -1,0 +1,142 @@
+/* login */
+.login-page {
+  font-family: Arial, sans-serif;
+  background-image: url("img/bolsa.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-container {
+  background: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  width: 300px;
+  text-align: center;
+  margin-left: 55%;
+}
+
+.login-page input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.login-page button {
+  width: 100%;
+  padding: 10px;
+  background: #a34831;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.login-page button:hover {
+  background: #8a3b2a;
+}
+
+#msg {
+  margin-top: 10px;
+  color: red;
+}
+
+/* pagina de gestión de productos */
+.products-page {
+  margin: 0;
+  background: #ffffff;
+  font-family: Arial, sans-serif;
+}
+
+header {
+  background: #6b2d1ec0;
+  color: rgb(255, 255, 255);
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+main {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.form-section,
+.products-section {
+  background: rgb(196, 193, 193);
+  padding: 1.5rem;
+  border-radius: 8px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.products-section ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.products-section li {
+  padding: 0.7rem;
+  margin-bottom: 0.5rem;
+  background: #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.products-page input {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.products-page button {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  padding: 0.7rem;
+  margin-bottom: 0.5rem;
+  background: #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.delete {
+  background: crimson;
+  color: white;
+  border: none;
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+}
+
+#error {
+  color: crimson;
+}
+
+footer {
+  text-align: center;
+  padding: 1rem;
+  margin-top: 2rem;
+}
+
+footer img.pie {
+  width: 30%;    
+  height: auto;
+  display: block;
+  margin: 0 auto 0.5rem auto;
+}

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Productos</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="products-page">
+
+<header>
+  <h1>Gestión de Productos</h1>
+  <button id="logout">Cerrar sesión</button>
+</header>
+
+<main>
+  <div class="form-section">
+    <h2>Agregar Producto</h2>
+    <input type="text" id="name" placeholder="Nombre">
+    <input type="number" id="price" placeholder="Precio">
+    <input type="number" id="stock" placeholder="Stock">
+    <button id="addProduct">Agregar</button>
+    <p id="error"></p>
+  </div>
+
+  <div class="products-section">
+    <h2>Lista de Productos</h2>
+    <ul id="productList"></ul>
+  </div>
+</main>
+
+<script src="app.js"></script>
+
+<footer>
+    <img src="img/header.webp" alt="Foto decorativa de pie de página" class="pie">
+    <p>&copy; 2025 Bolsos de lujo</p>
+</footer>
+</body>
+</html>
