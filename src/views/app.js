@@ -1,20 +1,25 @@
-const API = "/api/products";
-const token = localStorage.getItem('token');
+// src/views/app.js
 
-if (!token && window.location.pathname !== "/login.html") {
-  window.location.href = '/login.html';
+// Simulación de token y login
+if (!localStorage.getItem('token')) {
+  // Para simulación, siempre tenemos un "usuario" logueado
+  localStorage.setItem('token', 'test-token');
 }
+
+const token = localStorage.getItem('token');
 
 const productList = document.getElementById('productList');
 const errorMsg = document.getElementById('error');
 
-// Cargar productos
-async function loadProducts() {
-  const res = await fetch(API, { headers: { Authorization: `Bearer ${token}` } });
-  const products = await res.json();
-  productList.innerHTML = '';
+let mockProducts = [
+  { _id: '1', name: 'Bolso Test', price: 100, stock: 5 },
+  { _id: '2', name: 'Bolso Demo', price: 200, stock: 2 }
+];
 
-  products.forEach(p => {
+// Cargar productos
+function loadProducts() {
+  productList.innerHTML = '';
+  mockProducts.forEach(p => {
     const li = document.createElement('li');
     li.innerHTML = `
       ${p.name} | $${p.price} | Stock: ${p.stock}
@@ -28,7 +33,7 @@ async function loadProducts() {
 // Agregar producto
 document.getElementById('addProduct').onclick = addProductHandler;
 
-async function addProductHandler() {
+function addProductHandler() {
   errorMsg.textContent = '';
   const name = document.getElementById('name').value;
   const price = document.getElementById('price').value;
@@ -39,16 +44,14 @@ async function addProductHandler() {
     return;
   }
 
-  const res = await fetch(API, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ name, price, stock })
-  });
+  const newProduct = {
+    _id: Date.now().toString(),
+    name,
+    price: Number(price),
+    stock: Number(stock)
+  };
 
-  if (!res.ok) {
-    errorMsg.textContent = 'Error al agregar producto';
-    return;
-  }
+  mockProducts.push(newProduct);
 
   document.getElementById('name').value = '';
   document.getElementById('price').value = '';
@@ -58,21 +61,21 @@ async function addProductHandler() {
 }
 
 // Eliminar producto
-async function deleteProduct(id) {
-  await fetch(`${API}/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+function deleteProduct(id) {
+  mockProducts = mockProducts.filter(p => p._id !== id);
   loadProducts();
 }
 
 // Editar producto
-async function editProduct(id, name, price, stock) {
+function editProduct(id, name, price, stock) {
   document.getElementById('name').value = name;
   document.getElementById('price').value = price;
   document.getElementById('stock').value = stock;
 
   const addBtn = document.getElementById('addProduct');
   addBtn.textContent = 'Actualizar';
-  
-  addBtn.onclick = async () => {
+
+  addBtn.onclick = () => {
     const updatedName = document.getElementById('name').value;
     const updatedPrice = document.getElementById('price').value;
     const updatedStock = document.getElementById('stock').value;
@@ -82,19 +85,11 @@ async function editProduct(id, name, price, stock) {
       return;
     }
 
-    const res = await fetch(`${API}/${id}`, {
-      method: 'PUT',
-      headers: { 
-        'Content-Type': 'application/json', 
-        Authorization: `Bearer ${token}` 
-      },
-      body: JSON.stringify({ name: updatedName, price: updatedPrice, stock: updatedStock })
-    });
-
-    if (!res.ok) {
-      errorMsg.textContent = 'Error al actualizar producto';
-      return;
-    }
+    mockProducts = mockProducts.map(p =>
+      p._id === id
+        ? { ...p, name: updatedName, price: Number(updatedPrice), stock: Number(updatedStock) }
+        : p
+    );
 
     addBtn.textContent = 'Agregar';
     addBtn.onclick = addProductHandler;
@@ -107,10 +102,10 @@ async function editProduct(id, name, price, stock) {
   };
 }
 
-// Logout
+// Logout (solo borra token para simulación)
 document.getElementById('logout').onclick = () => {
   localStorage.removeItem('token');
-  window.location.href = '/login.html';
+  alert('Token eliminado. Recarga la página para simular login.');
 };
 
 loadProducts();
