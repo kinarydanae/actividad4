@@ -1,0 +1,2 @@
+Seguridad y variables de entorno:
+El archivo .env no se incluye en el repositorio por motivos de seguridad, ya que contiene información sensible como claves JWT y cadenas de conexión a la base de datos. Las variables de entorno se gestionan de forma local mediante archivos .env y en producción mediante la configuración de variables de entorno de la plataforma SaaS (Vercel).
