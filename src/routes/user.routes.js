@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+const auth = require('../middlewares/auth.middleware');
 const {
   getUsers,
   getUserById,
@@ -8,21 +9,13 @@ const {
   deleteUser
 } = require('../controllers/user.controller');
 
-const authMiddleware = require('../middlewares/auth.middleware');
-
-// Todas las rutas requieren usuario autenticado
-router.use(authMiddleware);
-
 // Obtener todos los usuarios
-router.get('/', getUsers);
-
+router.get('/', auth, getUsers);
 // Obtener usuario por ID
-router.get('/:id', getUserById);
-
+router.get('/:id', auth, getUserById);
 // Actualizar usuario por ID
-router.put('/:id', updateUser);
-
+router.put('/:id', auth, updateUser);
 // Eliminar usuario por ID
-router.delete('/:id', deleteUser);
+router.delete('/:id', auth, deleteUser);
 
 module.exports = router;

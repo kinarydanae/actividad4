@@ -9,12 +9,14 @@ module.exports = (req, res, next) => {
     return res.status(401).json({ msg: 'Token requerido' });
 
   const token = authHeader.split(' ')[1];
+  if (!token)
+    return res.status(401).json({ msg: 'Token requerido' });
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded;
     next();
   } catch {
-    res.status(401).json({ msg: 'Token inválido' });
+    return res.status(401).json({ msg: 'Token inválido' });
   }
 };

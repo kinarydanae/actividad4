@@ -41,10 +41,39 @@ const getProducts = async (req, res) => {
   }
 };
 
+// READ BY ID
+const getProductById = async (req, res) => {
+  const { id } = req.params;
+
+  // MOCK
+  if (global.mockDB) {
+    const product = global.mockDB.products.find(p => p._id === id);
+    if (!product)
+      return res.status(404).json({ msg: 'Producto no encontrado' });
+
+    return res.json(product);
+  }
+
+  // REAL
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id))
+      return res.status(400).json({ msg: 'ID inválido' });
+
+    const product = await Product.findById(id);
+    if (!product)
+      return res.status(404).json({ msg: 'Producto no encontrado' });
+
+    res.json(product);
+  } catch {
+    res.status(500).json({ msg: 'Error al buscar producto' });
+  }
+};
+
 // UPDATE
 const updateProduct = async (req, res) => {
   const { id } = req.params;
 
+  // MOCK
   if (global.mockDB) {
     const product = global.mockDB.products.find(p => p._id === id);
     if (!product)
@@ -54,6 +83,7 @@ const updateProduct = async (req, res) => {
     return res.json(product);
   }
 
+   // REAL 
   try {
     if (!mongoose.Types.ObjectId.isValid(id))
       return res.status(400).json({ msg: 'ID inválido' });
@@ -72,22 +102,35 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
   const { id } = req.params;
 
+  // MOCK
   if (global.mockDB) {
+    const exists = global.mockDB.products.find(p => p._id === id);
+    if (!exists)
+      return res.status(404).json({ msg: 'Producto no encontrado' });
+
     global.mockDB.products = global.mockDB.products.filter(p => p._id !== id);
     return res.json({ msg: 'Producto eliminado (mock)' });
   }
 
+  // REAL
   try {
-    await Product.findByIdAndDelete(id);
+    if (!mongoose.Types.ObjectId.isValid(id))
+      return res.status(400).json({ msg: 'ID inválido' });
+
+    const deleted = await Product.findByIdAndDelete(id);
+    if (!deleted)
+      return res.status(404).json({ msg: 'Producto no encontrado' });
+
     res.json({ msg: 'Producto eliminado' });
   } catch {
-    res.status(500).json({ msg: 'Error al eliminar' });
+    res.status(500).json({ msg: 'Error al eliminar producto' });
   }
 };
 
 module.exports = {
   createProduct,
   getProducts,
+  getProductById,
   updateProduct,
   deleteProduct
 };
